@@ -3,34 +3,50 @@ import { Field, reduxForm } from 'redux-form';
 
 class PostsNew extends Component {
   renderField(field) {
+    const { meta: { touched, error } } = field;
+    const className = `form-group ${touched && error ? 'has-danger' : ''}`;
+
     return (
-      <div className="form-group">
+      <div className={className}>
         <label>{field.label}</label>
         <input
           className="form-control"
           type="text"
           {...field.input}
-        />
+          />
+        <div className="text-help">
+          {touched ? error : ''}
+        </div>
       </div>
     );
   }
 
   renderPostField(field) {
+    const { meta: { touched, error } } = field;
+    const className = `form-group ${touched && error ? 'has-danger' : ''}`;
+
     return(
-      <div className="form-group">
+      <div className={className}>
         <label>{field.label}</label>
         <textarea
           className="form-control"
           type="textarea"
           {...field.input}
-        />
+          />
+        {touched ? error : ''}
       </div>
     );
   }
 
+  onSubmit(values) {
+    console.log(values);
+  }
+
   render() {
+    const { handleSubmit } = this.props;
+
     return (
-      <form>
+      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <Field
           label="Title"
           name="title"
@@ -46,6 +62,7 @@ class PostsNew extends Component {
           name="content"
           component={this.renderPostField}
         />
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     );
   }
@@ -59,10 +76,10 @@ function validate(values) {
     errors.title = "Enter a title!";
   }
   if (!values.categories) {
-    errors.title = "Enter some !";
+    errors.categories = "Enter some categories!";
   }
   if (!values.content) {
-    errors.title = "Enter a title!";
+    errors.content = "Enter some content!";
   }
 
   // if errors is empty, the form is fine to submit
